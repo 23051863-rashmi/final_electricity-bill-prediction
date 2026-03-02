@@ -102,11 +102,13 @@ with tabs[0]:
 
         st.subheader("Usage Recommendations")
 
-        for rec in result["Recommendations"]:
-            if "reduce" in rec.lower():
-                st.warning(rec)
-            else:
-                st.success(rec)
+ for rec in result["Recommendations"]:
+    formatted = rec.replace("•", "\n•")
+
+    if "reduce" in rec.lower():
+        st.warning(formatted)
+    else:
+        st.success(formatted)
 
 # =================================================
 # ============= SCENARIO TAB ======================
@@ -194,3 +196,4 @@ with tabs[2]:
 
         st.subheader("Top Influencing Features")
         st.bar_chart(shap_df.set_index("Feature").head(8))
+
