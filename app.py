@@ -5,10 +5,8 @@ import matplotlib.pyplot as plt
 from model import smart_energy_assistant, best_xgb, features
 from scenario_schedular import get_user_input
 
-# ================= PAGE CONFIG =================
 st.set_page_config(page_title="Smart Energy Optimizer", layout="wide")
 
-# ================= THEME =================
 st.markdown("""
 <style>
 .stApp {
@@ -19,25 +17,6 @@ st.markdown("""
     background-color: rgba(255,255,255,0.05);
     padding: 2rem;
     border-radius: 15px;
-}
-.stTabs [data-baseweb="tab"] {
-    background-color: rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 10px;
-    margin-right: 5px;
-    color: white;
-    font-weight: 600;
-}
-.stTabs [aria-selected="true"] {
-    background: linear-gradient(90deg, #00c6ff, #00ff9d);
-    color: black;
-}
-.stButton>button {
-    background: linear-gradient(90deg, #00c6ff, #00ff9d);
-    color: black;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
 }
 [data-testid="stMetric"] {
     background-color: rgba(255,255,255,0.08);
@@ -51,9 +30,7 @@ st.title("Smart Energy Consumption Optimizer")
 
 tabs = st.tabs(["Prediction", "Scenario Simulator", "Explainability"])
 
-# =================================================
-# PREDICTION TAB
-# =================================================
+# ================= PREDICTION =================
 with tabs[0]:
     st.header("Bill Prediction")
 
@@ -79,29 +56,33 @@ with tabs[0]:
 
         colA, colB = st.columns(2)
 
-        # ===== BAR CHART (compact) =====
+        # ===== VERY SMALL BAR =====
         with colA:
-            fig_bar, ax_bar = plt.subplots(figsize=(4.5, 2.4))
+            fig_bar, ax_bar = plt.subplots(
+                figsize=(3.2, 1.6), dpi=120
+            )
             ax_bar.bar(costs_df["Appliance"], costs_df["Cost"])
-            plt.xticks(rotation=90, fontsize=8)
-            ax_bar.set_ylabel("")
+            ax_bar.set_xticklabels(costs_df["Appliance"], rotation=90, fontsize=6)
+            ax_bar.set_yticks([])
             ax_bar.set_xlabel("")
-            plt.tight_layout(pad=0.3)
-            st.pyplot(fig_bar)
+            ax_bar.set_ylabel("")
+            plt.tight_layout(pad=0.1)
+            st.pyplot(fig_bar, use_container_width=False)
 
-        # ===== PIE CHART (smaller + no white frame) =====
+        # ===== VERY SMALL PIE =====
         with colB:
-            fig_pie, ax_pie = plt.subplots(figsize=(4.5, 2.4))
+            fig_pie, ax_pie = plt.subplots(
+                figsize=(3.2, 1.6), dpi=120
+            )
             ax_pie.pie(
                 costs_df["Cost"],
                 labels=costs_df["Appliance"],
-                autopct='%1.1f%%',
-                radius=0.75,              # smaller pie
-                textprops={'fontsize':8}
+                autopct='%1.0f%%',
+                radius=0.6,
+                textprops={'fontsize':6}
             )
-            ax_pie.set_title("Cost Distribution", fontsize=9, pad=2)
-            plt.tight_layout(pad=0.1)
-            st.pyplot(fig_pie)
+            plt.tight_layout(pad=0.05)
+            st.pyplot(fig_pie, use_container_width=False)
 
         st.subheader("Usage Recommendations")
 
@@ -112,9 +93,7 @@ with tabs[0]:
             else:
                 st.success(formatted)
 
-# =================================================
-# SCENARIO TAB
-# =================================================
+# ================= SCENARIO =================
 with tabs[1]:
     st.header("Scenario Simulator")
 
@@ -151,9 +130,7 @@ with tabs[1]:
         col2.metric("Optimized Bill", f"₹{round(optimized_bill,2)}")
         col3.metric("Saving", f"₹{round(saving,2)}")
 
-# =================================================
-# EXPLAINABILITY TAB
-# =================================================
+# ================= EXPLAIN =================
 with tabs[2]:
     st.header("Explainability")
 
