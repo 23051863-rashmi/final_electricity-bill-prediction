@@ -1,11 +1,3 @@
-
-Those must NOT be inside Python file.
-
----
-
-# ✅ CLEAN FINAL WORKING app.py  
-Copy **ONLY this code** (no ``` anywhere) 👇
-
 import streamlit as st
 import pandas as pd
 import shap
@@ -56,62 +48,63 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("⚡ Smart Energy Consumption Optimizer")
+st.title("Smart Energy Consumption Optimizer")
 
-tabs = st.tabs(["🔮 Prediction", "🔁 Scenario Simulator", "🧠 Explainability"])
+tabs = st.tabs(["Prediction", "Scenario Simulator", "Explainability"])
 
-# ================= Prediction =================
 with tabs[0]:
-
-    st.header("🔮 Bill Prediction")
+    st.header("Bill Prediction")
     user_input = get_user_input("pred")
 
     threshold = st.slider("Appliance Share Alert Threshold (%)", 10, 50, 25)
 
     if st.button("Predict"):
-
         result = smart_energy_assistant(user_input, threshold=threshold)
 
         col1, col2 = st.columns(2)
         col1.metric("Predicted Bill", f"₹{result['Predicted Bill']}")
         col2.metric("Prediction Month", f"{result['Prediction Month']}/{result['Prediction Year']}")
 
-        st.subheader("📊 Appliance Cost Breakdown")
+        st.subheader("Appliance Cost Breakdown")
 
         costs_df = pd.DataFrame(result["Appliance Costs"].items(), columns=["Appliance", "Cost"])
 
-        colA, colB = st.columns([1,1])
+        colA, colB = st.columns(2)
 
         with colA:
             st.bar_chart(costs_df.set_index("Appliance"))
 
         with colB:
             fig, ax = plt.subplots(figsize=(4,4))
-            ax.pie(costs_df["Cost"], labels=costs_df["Appliance"], autopct='%1.1f%%', textprops={'fontsize':9})
+            ax.pie(
+                costs_df["Cost"],
+                labels=costs_df["Appliance"],
+                autopct='%1.1f%%',
+                textprops={'fontsize':9}
+            )
             ax.set_title("Cost Distribution")
             st.pyplot(fig, use_container_width=True)
 
-        st.subheader("💡 Usage Recommendations")
-
+        st.subheader("Usage Recommendations")
         for rec in result["Recommendations"]:
             if "reduce" in rec.lower():
                 st.warning(rec)
             else:
                 st.success(rec)
 
-# ================= Simulator =================
 with tabs[1]:
-
-    st.header("🔁 Smart Scenario Builder")
+    st.header("Scenario Simulator")
     user_input = get_user_input("sim")
 
     threshold = st.slider("Maximum Allowed Appliance Share (%)", 10, 50, 25)
 
     if st.button("Run Simulation"):
-
         original_bill = smart_energy_assistant(user_input)["Predicted Bill"]
 
-        appliance_cols = ["ac_kwh","geyser_kwh","fridge_kwh","wm_kwh","tv_kwh","fan_kwh","lighting_kwh"]
+        appliance_cols = [
+            "ac_kwh","geyser_kwh","fridge_kwh",
+            "wm_kwh","tv_kwh","fan_kwh","lighting_kwh"
+        ]
         rate = user_input["rate"]
 
         costs = {col: user_input[col]*rate for col in appliance_cols}
@@ -135,14 +128,11 @@ with tabs[1]:
         col2.metric("Optimized Bill", f"₹{round(optimized_bill,2)}")
         col3.metric("Saving", f"₹{round(saving,2)}")
 
-# ================= Explainability =================
 with tabs[2]:
-
-    st.header("🧠 Explainability")
+    st.header("Explainability")
     user_input = get_user_input("shap")
 
     if st.button("Explain Prediction"):
-
         result = smart_energy_assistant(user_input)
         predicted_bill = result["Predicted Bill"]
         previous_bill = user_input["prev_bill"]
@@ -173,19 +163,10 @@ with tabs[2]:
         explainer = shap.TreeExplainer(best_xgb)
         shap_values = explainer.shap_values(user_df)
 
-        shap_df = pd.DataFrame({"Feature": features, "Impact": shap_values[0]}).sort_values(by="Impact", key=abs, ascending=False)
+        shap_df = pd.DataFrame({
+            "Feature": features,
+            "Impact": shap_values[0]
+        }).sort_values(by="Impact", key=abs, ascending=False)
 
-        st.subheader("📊 Top Influencing Features")
+        st.subheader("Top Influencing Features")
         st.bar_chart(shap_df.set_index("Feature").head(8))
-
----
-
-# ✅ Now it will run on Streamlit Cloud
-No indentation error  
-No markdown symbols  
-UI preserved  
-
----
-
-If any new error appears → send screenshot 👍  
-We’ll finish deployment fully 🚀
