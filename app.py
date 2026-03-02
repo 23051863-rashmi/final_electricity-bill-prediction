@@ -71,7 +71,7 @@ with tabs[0]:
         col1.metric("Predicted Bill", f"₹{result['Predicted Bill']}")
         col2.metric("Prediction Month", f"{result['Prediction Month']}/{result['Prediction Year']}")
 
-        st.subheader("Appliance Cost Breakdown")
+            st.subheader("Appliance Cost Breakdown")
 
         costs_df = pd.DataFrame(
             result["Appliance Costs"].items(),
@@ -80,22 +80,20 @@ with tabs[0]:
 
         colA, colB = st.columns(2)
 
-        # Bar chart
         with colA:
             st.bar_chart(costs_df.set_index("Appliance"))
 
-        # Small pie chart
         with colB:
-    fig, ax = plt.subplots(figsize=(5,3))   # match bar height
-    ax.pie(
-        costs_df["Cost"],
-        labels=costs_df["Appliance"],
-        autopct='%1.1f%%',
-        textprops={'fontsize':8}
-    )
-    ax.set_title("Cost Distribution", fontsize=11)
-    plt.tight_layout()
-    st.pyplot(fig, use_container_width=True)
+            fig, ax = plt.subplots(figsize=(5,3))
+            ax.pie(
+                costs_df["Cost"],
+                labels=costs_df["Appliance"],
+                autopct='%1.1f%%',
+                textprops={'fontsize':8}
+            )
+            ax.set_title("Cost Distribution", fontsize=11)
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
 
         st.subheader("Usage Recommendations")
 
@@ -189,5 +187,6 @@ with tabs[2]:
 
         st.subheader("Top Influencing Features")
         st.bar_chart(shap_df.set_index("Feature").head(8))
+
 
 
