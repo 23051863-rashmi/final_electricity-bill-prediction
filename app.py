@@ -85,17 +85,18 @@ with tabs[0]:
             st.bar_chart(costs_df.set_index("Appliance"))
 
         # Small pie chart
-        with colB:
-            fig, ax = plt.subplots(figsize=(2.8, 2.8))
-            ax.pie(
-                costs_df["Cost"],
-                labels=costs_df["Appliance"],
-                autopct='%1.1f%%',
-                textprops={'fontsize':8}
-            )
-            ax.set_title("Cost Distribution", fontsize=10)
-            plt.tight_layout()
-            st.pyplot(fig, use_container_width=False)
+        
+       with colB:
+    fig, ax = plt.subplots(figsize=(5,3))   # match bar height
+    ax.pie(
+        costs_df["Cost"],
+        labels=costs_df["Appliance"],
+        autopct='%1.1f%%',
+        textprops={'fontsize':8}
+    )
+    ax.set_title("Cost Distribution", fontsize=11)
+    plt.tight_layout()
+    st.pyplot(fig, use_container_width=True)
 
         st.subheader("Usage Recommendations")
 
@@ -189,3 +190,4 @@ with tabs[2]:
 
         st.subheader("Top Influencing Features")
         st.bar_chart(shap_df.set_index("Feature").head(8))
+
