@@ -83,11 +83,9 @@ with tabs[0]:
 
         colA, colB = st.columns(2)
 
-        # Bar chart
         with colA:
             st.bar_chart(costs_df.set_index("Appliance"))
 
-        # Pie chart (same height as bar)
         with colB:
             fig, ax = plt.subplots(figsize=(5, 3))
             ax.pie(
@@ -102,13 +100,12 @@ with tabs[0]:
 
         st.subheader("Usage Recommendations")
 
- for rec in result["Recommendations"]:
-    formatted = rec.replace("•", "\n•")
-
-    if "reduce" in rec.lower():
-        st.warning(formatted)
-    else:
-        st.success(formatted)
+        for rec in result["Recommendations"]:
+            formatted = rec.replace("•", "\n•")
+            if "reduce" in rec.lower():
+                st.warning(formatted)
+            else:
+                st.success(formatted)
 
 # =================================================
 # ============= SCENARIO TAB ======================
@@ -196,4 +193,3 @@ with tabs[2]:
 
         st.subheader("Top Influencing Features")
         st.bar_chart(shap_df.set_index("Feature").head(8))
-
