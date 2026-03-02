@@ -39,9 +39,6 @@ st.markdown("""
     border: none;
     font-weight: 600;
 }
-.stButton>button:hover {
-    background: linear-gradient(90deg, #00ff9d, #00c6ff);
-}
 [data-testid="stMetric"] {
     background-color: rgba(255,255,255,0.08);
     padding: 15px;
@@ -83,20 +80,28 @@ with tabs[0]:
 
         colA, colB = st.columns(2)
 
+        # ===== Bar chart (6 cm height) =====
         with colA:
-            st.bar_chart(costs_df.set_index("Appliance"))
+            fig_bar, ax_bar = plt.subplots(figsize=(4.8, 2.4))
+            ax_bar.bar(costs_df["Appliance"], costs_df["Cost"])
+            ax_bar.set_ylabel("Cost")
+            ax_bar.set_xlabel("Appliance")
+            plt.xticks(rotation=90, fontsize=8)
+            plt.tight_layout()
+            st.pyplot(fig_bar)
 
+        # ===== Pie chart (same size) =====
         with colB:
-            fig, ax = plt.subplots(figsize=(5, 3))
-            ax.pie(
+            fig_pie, ax_pie = plt.subplots(figsize=(4.8, 2.4))
+            ax_pie.pie(
                 costs_df["Cost"],
                 labels=costs_df["Appliance"],
                 autopct='%1.1f%%',
                 textprops={'fontsize':8}
             )
-            ax.set_title("Cost Distribution", fontsize=11)
+            ax_pie.set_title("Cost Distribution", fontsize=10)
             plt.tight_layout()
-            st.pyplot(fig, use_container_width=True)
+            st.pyplot(fig_pie)
 
         st.subheader("Usage Recommendations")
 
