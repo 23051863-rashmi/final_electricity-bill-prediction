@@ -47,13 +47,12 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ================= TITLE =================
 st.title("Smart Energy Consumption Optimizer")
 
 tabs = st.tabs(["Prediction", "Scenario Simulator", "Explainability"])
 
 # =================================================
-# =============== PREDICTION TAB ==================
+# PREDICTION TAB
 # =================================================
 with tabs[0]:
     st.header("Bill Prediction")
@@ -80,27 +79,28 @@ with tabs[0]:
 
         colA, colB = st.columns(2)
 
-        # ===== Bar chart (6 cm height) =====
+        # ===== BAR CHART (compact) =====
         with colA:
-            fig_bar, ax_bar = plt.subplots(figsize=(4.5, 2.0))
+            fig_bar, ax_bar = plt.subplots(figsize=(4.5, 2.4))
             ax_bar.bar(costs_df["Appliance"], costs_df["Cost"])
-            ax_bar.set_ylabel("Cost")
-            ax_bar.set_xlabel("Appliance")
             plt.xticks(rotation=90, fontsize=8)
-            plt.tight_layout()
+            ax_bar.set_ylabel("")
+            ax_bar.set_xlabel("")
+            plt.tight_layout(pad=0.3)
             st.pyplot(fig_bar)
 
-        # ===== Pie chart (same size) =====
+        # ===== PIE CHART (smaller + no white frame) =====
         with colB:
-            fig_pie, ax_pie = plt.subplots(figsize=(3.5, 2.0))
+            fig_pie, ax_pie = plt.subplots(figsize=(4.5, 2.4))
             ax_pie.pie(
                 costs_df["Cost"],
                 labels=costs_df["Appliance"],
                 autopct='%1.1f%%',
+                radius=0.75,              # smaller pie
                 textprops={'fontsize':8}
             )
-            ax_pie.set_title("Cost Distribution", fontsize=10)
-            plt.tight_layout()
+            ax_pie.set_title("Cost Distribution", fontsize=9, pad=2)
+            plt.tight_layout(pad=0.1)
             st.pyplot(fig_pie)
 
         st.subheader("Usage Recommendations")
@@ -113,7 +113,7 @@ with tabs[0]:
                 st.success(formatted)
 
 # =================================================
-# ============= SCENARIO TAB ======================
+# SCENARIO TAB
 # =================================================
 with tabs[1]:
     st.header("Scenario Simulator")
@@ -152,7 +152,7 @@ with tabs[1]:
         col3.metric("Saving", f"₹{round(saving,2)}")
 
 # =================================================
-# ============= EXPLAINABILITY TAB ================
+# EXPLAINABILITY TAB
 # =================================================
 with tabs[2]:
     st.header("Explainability")
