@@ -82,7 +82,7 @@ with tabs[0]:
 
         # ===== Bar chart (6 cm height) =====
         with colA:
-            fig_bar, ax_bar = plt.subplots(figsize=(4.8, 2.4))
+            fig_bar, ax_bar = plt.subplots(figsize=(4.5, 2.0))
             ax_bar.bar(costs_df["Appliance"], costs_df["Cost"])
             ax_bar.set_ylabel("Cost")
             ax_bar.set_xlabel("Appliance")
@@ -92,7 +92,7 @@ with tabs[0]:
 
         # ===== Pie chart (same size) =====
         with colB:
-            fig_pie, ax_pie = plt.subplots(figsize=(4.8, 2.4))
+            fig_pie, ax_pie = plt.subplots(figsize=(3.5, 2.0))
             ax_pie.pie(
                 costs_df["Cost"],
                 labels=costs_df["Appliance"],
