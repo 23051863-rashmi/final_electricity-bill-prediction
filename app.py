@@ -5,8 +5,10 @@ import matplotlib.pyplot as plt
 from model import smart_energy_assistant, best_xgb, features
 from scenario_schedular import get_user_input
 
+# ================= PAGE CONFIG =================
 st.set_page_config(page_title="Smart Energy Optimizer", layout="wide")
 
+# ================= THEME =================
 st.markdown("""
 <style>
 .stApp {
@@ -48,10 +50,14 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ================= TITLE =================
 st.title("Smart Energy Consumption Optimizer")
 
 tabs = st.tabs(["Prediction", "Scenario Simulator", "Explainability"])
 
+# =================================================
+# =============== PREDICTION TAB ==================
+# =================================================
 with tabs[0]:
     st.header("Bill Prediction")
     user_input = get_user_input("pred")
@@ -67,32 +73,41 @@ with tabs[0]:
 
         st.subheader("Appliance Cost Breakdown")
 
-        costs_df = pd.DataFrame(result["Appliance Costs"].items(), columns=["Appliance", "Cost"])
+        costs_df = pd.DataFrame(
+            result["Appliance Costs"].items(),
+            columns=["Appliance", "Cost"]
+        )
 
         colA, colB = st.columns(2)
 
+        # Bar chart
         with colA:
             st.bar_chart(costs_df.set_index("Appliance"))
 
+        # Small pie chart
         with colB:
-         fig, ax = plt.subplots(figsize=(2.8, 2.8))
-ax.pie(
-    costs_df["Cost"],
-    labels=costs_df["Appliance"],
-    autopct='%1.1f%%',
-    textprops={'fontsize':8}
-)
-ax.set_title("Cost Distribution", fontsize=10)
-plt.tight_layout()
-st.pyplot(fig, use_container_width=False)
+            fig, ax = plt.subplots(figsize=(2.8, 2.8))
+            ax.pie(
+                costs_df["Cost"],
+                labels=costs_df["Appliance"],
+                autopct='%1.1f%%',
+                textprops={'fontsize':8}
+            )
+            ax.set_title("Cost Distribution", fontsize=10)
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=False)
 
         st.subheader("Usage Recommendations")
+
         for rec in result["Recommendations"]:
             if "reduce" in rec.lower():
                 st.warning(rec)
             else:
                 st.success(rec)
 
+# =================================================
+# ============= SCENARIO TAB ======================
+# =================================================
 with tabs[1]:
     st.header("Scenario Simulator")
     user_input = get_user_input("sim")
@@ -129,6 +144,9 @@ with tabs[1]:
         col2.metric("Optimized Bill", f"₹{round(optimized_bill,2)}")
         col3.metric("Saving", f"₹{round(saving,2)}")
 
+# =================================================
+# ============= EXPLAINABILITY TAB ================
+# =================================================
 with tabs[2]:
     st.header("Explainability")
     user_input = get_user_input("shap")
@@ -171,4 +189,3 @@ with tabs[2]:
 
         st.subheader("Top Influencing Features")
         st.bar_chart(shap_df.set_index("Feature").head(8))
-
