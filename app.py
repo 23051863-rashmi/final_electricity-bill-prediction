@@ -60,8 +60,8 @@ tabs = st.tabs(["Prediction", "Scenario Simulator", "Explainability"])
 # =================================================
 with tabs[0]:
     st.header("Bill Prediction")
-    user_input = get_user_input("pred")
 
+    user_input = get_user_input("pred")
     threshold = st.slider("Appliance Share Alert Threshold (%)", 10, 50, 25)
 
     if st.button("Predict"):
@@ -69,9 +69,12 @@ with tabs[0]:
 
         col1, col2 = st.columns(2)
         col1.metric("Predicted Bill", f"₹{result['Predicted Bill']}")
-        col2.metric("Prediction Month", f"{result['Prediction Month']}/{result['Prediction Year']}")
+        col2.metric(
+            "Prediction Month",
+            f"{result['Prediction Month']}/{result['Prediction Year']}"
+        )
 
-            st.subheader("Appliance Cost Breakdown")
+        st.subheader("Appliance Cost Breakdown")
 
         costs_df = pd.DataFrame(
             result["Appliance Costs"].items(),
@@ -80,11 +83,13 @@ with tabs[0]:
 
         colA, colB = st.columns(2)
 
+        # Bar chart
         with colA:
             st.bar_chart(costs_df.set_index("Appliance"))
 
+        # Pie chart (same height as bar)
         with colB:
-            fig, ax = plt.subplots(figsize=(5,3))
+            fig, ax = plt.subplots(figsize=(5, 3))
             ax.pie(
                 costs_df["Cost"],
                 labels=costs_df["Appliance"],
@@ -108,8 +113,8 @@ with tabs[0]:
 # =================================================
 with tabs[1]:
     st.header("Scenario Simulator")
-    user_input = get_user_input("sim")
 
+    user_input = get_user_input("sim")
     threshold = st.slider("Maximum Allowed Appliance Share (%)", 10, 50, 25)
 
     if st.button("Run Simulation"):
@@ -147,6 +152,7 @@ with tabs[1]:
 # =================================================
 with tabs[2]:
     st.header("Explainability")
+
     user_input = get_user_input("shap")
 
     if st.button("Explain Prediction"):
@@ -166,7 +172,8 @@ with tabs[2]:
 
         user_df["total_kwh"] = (
             user_df["ac_kwh"] + user_df["geyser_kwh"] + user_df["fridge_kwh"] +
-            user_df["wm_kwh"] + user_df["tv_kwh"] + user_df["fan_kwh"] + user_df["lighting_kwh"]
+            user_df["wm_kwh"] + user_df["tv_kwh"] + user_df["fan_kwh"] +
+            user_df["lighting_kwh"]
         )
 
         user_df["city_Delhi"] = 1 if user_input["city"]=="Delhi" else 0
@@ -187,6 +194,3 @@ with tabs[2]:
 
         st.subheader("Top Influencing Features")
         st.bar_chart(shap_df.set_index("Feature").head(8))
-
-
-
